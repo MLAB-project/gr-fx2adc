@@ -1,6 +1,8 @@
 gr-fx2adc
 ==========
 
+Derived from [fx2pipe](http://www.triplespark.net/elec/periph/USB-FX2/software/fx2pipe.html), so that puts us into GPL land.
+
 Temporary instructions
 ----------------------
 
