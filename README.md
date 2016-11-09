@@ -1,5 +1,5 @@
-fx2pipe
-=======
+gr-fx2adc
+==========
 
 Temporary instructions
 ----------------------
