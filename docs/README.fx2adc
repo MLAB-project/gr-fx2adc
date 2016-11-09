@@ -1,0 +1,11 @@
+This is the fx2adc-write-a-block package meant as a guide to building
+out-of-tree packages. To use the fx2adc blocks, the Python namespaces
+is in 'fx2adc', which is imported as:
+
+    import fx2adc
+
+See the Doxygen documentation for details about the blocks available
+in this package. A quick listing of the details can be found in Python
+after importing by using:
+
+    help(fx2adc)

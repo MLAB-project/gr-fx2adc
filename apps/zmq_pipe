@@ -1,0 +1,54 @@
+#!/usr/bin/python
+
+import sys
+import argparse
+import numpy as np
+from gnuradio import gr, blocks, zeromq
+
+class stdout_c(gr.sync_block):
+	def __init__(self, vec_len):
+		gr.sync_block.__init__(self,
+			name="stdout_c",
+			in_sig=[(np.complex64, vec_len)],
+			out_sig=[])
+
+	def work(self, input_items, output_items):
+		try:
+			input_items[0].tofile(sys.stdout)
+		except IOError:
+			return -1
+
+		return len(input_items[0])
+
+def main():
+	parser = argparse.ArgumentParser(description='Pipe c64 samples from a ZMQ SUB endpoint.')
+
+	parser.add_argument('-a', metavar='ADDR', type=str, default='tcp://127.0.0.1:6000',
+						help='address to connect to (default: %(default)s)')
+	parser.add_argument('-n', metavar='VLEN', type=int, default=2,
+						help='vector length (default: %(default)s)')
+	parser.add_argument('-e', action='store_true',
+						help='pass the entire vector')
+	parser.add_argument('-c', metavar='CHAN_NO', type=int, default=0,
+						help='pass the specified channel only (default: %(default)s)')
+
+	args = parser.parse_args()
+
+	tb = gr.top_block()
+
+	client = zeromq.sub_source(args.n, 8, args.a, pass_tags=True)
+
+	if args.e:
+		tb.connect(client, stdout_c(args.n))
+	else:
+		v2s = blocks.vector_to_streams(8, args.n)
+
+		tb.connect(client, v2s)
+
+		for i in range(args.n):
+			tb.connect((v2s, i), stdout_c(1) if i == args.c else blocks.null_sink(8))
+
+	tb.run()
+
+if __name__ == "__main__":
+	main()
