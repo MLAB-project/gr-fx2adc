@@ -12,7 +12,7 @@ def main():
 	adc = fx2adc.fx2adc(4, "fx2adc-fw/fx2adc.ihx")
 
 	tb.connect(adc, blocks.tag_debug(32, "fx2pipe", ""))
-	tb.connect(adc, zeromq.pub_sink(32, 1, "tcp://127.0.0.1:6000", pass_tags=True))
+	tb.connect(adc, zeromq.pub_sink(32, 1, "tcp://0.0.0.0:6000", pass_tags=True))
 
 	tb.run()
 
